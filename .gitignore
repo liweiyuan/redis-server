@@ -1,0 +1,29 @@
+# CMake build files
+build/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+
+# IDE-specific files
+.idea/
+*.swp
+*~
+*.suo
+*.user
+*.sln
+*.vcxproj
+*.vs/
+
+# Cache files
+.cache/
+
+# Build artifacts
+*.o
+*.a
+*.so
+*.dylib
+redis-server
+
+# macOS
+.DS_Store
