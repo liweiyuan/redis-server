@@ -1,5 +1,5 @@
 #include "network.h"
-#include "command.h"
+#include "command/command.h"
 #include <iostream>
 #include <thread>
 #include <cstring>
@@ -7,7 +7,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-void handle_client(int client_socket) {
+// The handle_client function now needs access to the CommandRegistry.
+// We can pass it as a parameter.
+void handle_client(int client_socket, CommandRegistry& registry) {
     char buffer[1024] = {0};
     while (true) {
         int bytes_received = read(client_socket, buffer, 1024);
@@ -21,7 +23,21 @@ void handle_client(int client_socket) {
         }
 
         std::vector<std::string> command_parts = parse_request(buffer, bytes_received);
-        std::string response = execute_command(command_parts);
+        std::string response;
+
+        if (command_parts.empty()) {
+            response = "-ERR Invalid command\r\n";
+        } else {
+            std::string command_name = command_parts[0];
+            auto command = registry.getCommand(command_name);
+            if (command) {
+                command_parts.erase(command_parts.begin()); // Remove command name, pass only args
+                response = command->execute(command_parts);
+            } else {
+                response = "-ERR unknown command '" + command_name + "'\r\n";
+            }
+        }
+
         send(client_socket, response.c_str(), response.length(), 0);
         memset(buffer, 0, sizeof(buffer));
     }
@@ -64,6 +80,7 @@ void Network::start() {
             continue;
         }
         std::cout << "New client connected." << std::endl;
-        std::thread(handle_client, client_socket).detach();
+        // Pass the command_registry to the handler thread
+        std::thread(handle_client, client_socket, std::ref(command_registry)).detach();
     }
 }

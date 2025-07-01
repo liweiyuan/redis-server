@@ -1,7 +1,7 @@
-#include "src/network.h"
+#include "network/network.h"
 
 int main() {
-    Network network;
-    network.start();
-    return 0;
+  Network network;
+  network.start();
+  return 0;
 }
