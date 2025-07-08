@@ -27,3 +27,5 @@ redis-server
 
 # macOS
 .DS_Store
+.vscode/
+redis-server.log

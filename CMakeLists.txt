@@ -6,7 +6,10 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(redis-server main.cpp
         src/command/command.h src/command/command.cpp
         src/network/network.h src/network/network.cpp
-        src/storage/storage.h src/storage/storage.cpp)
+        src/storage/storage.h src/storage/storage.cpp
+        src/config/config.h src/config/config.cpp
+        src/logger/logger.h src/logger/logger.cpp
+)
 
 target_include_directories(redis-server PUBLIC src)
 
